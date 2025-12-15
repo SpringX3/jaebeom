@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.MediaType;
 
 // import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +72,7 @@ public class PostController {
 
     // 2. 폼 데이터를 받아서 실제 글 작성 처리 (POST)
     @Operation(summary = "게시글 작성 기능", description = "Member 정보를 가져와 게시글을 작성합니다.")
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String savePost(@ModelAttribute PostSaveRequestDto Save_Req, HttpSession session) {
         // 세션에서 로그인한 Member 객체 가져오기
         Member loginMember = (Member) session.getAttribute("loginMember");
@@ -133,7 +134,7 @@ public class PostController {
 
     // 5. 폼 데이터를 받아서 실제 글 수정 처리 (POST)
     @Operation(summary = "게시글 수정", description = "작성자 확인 후 게시글을 수정합니다.")
-    @PostMapping("/{id}/edit")
+    @PostMapping(value = "/{id}/edit",  consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String updatePost(@PathVariable Long id, @ModelAttribute PostUpdateRequestDto Update_Req, HttpSession session) {
         // 작성자 본인 확인
         Post post = postRepository.findByIdWithMember(id)
