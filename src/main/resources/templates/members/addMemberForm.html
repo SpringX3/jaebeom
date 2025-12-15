@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 420px;
+            margin: 50px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        h2 {text-align: center;}
+        div {margin-bottom: 15px;}
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<h2>회원가입</h2>
+
+<form action="/members/join" method="post">
+    <div>
+        <label for="loginId">로그인 ID:</label>
+        <input type="text" id="loginId" name="loginId" placeholder="아이디 입력" />
+    </div>
+    <div>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" placeholder="비밀번호 입력" />
+    </div>
+    <div>
+        <label for="nickname">닉네임:</label>
+        <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" />
+    </div>
+    <button type="submit">가입하기</button>
+</form>
+
+</body>
+</html>

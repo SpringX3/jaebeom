@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 200px;
+            margin: auto;
+        }
+        div {margin-bottom: 15px;}
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            min-height: 250px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        a.btn-cancel {
+            padding: 10px 15px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>게시글 수정</h2>
+
+    <!-- 수정 폼 (Postcontroller의 updatePost 메서드와 연결) -->
+    <form th:action="@{/posts/{id}/edit(id=${post.id})}" method="post">
+        <!-- DTO(PostUpdateRequestDto)의 필드명(title)과 name을 일치 -->
+        <div>
+            <label for="title">제목:</label>
+            <!-- 기존 post 데이터를 th:value로 채워넣음 -->
+            <input type="text" id="title" name="title" th:value="${post.title}" />
+        </div>
+
+        <!-- DTO(PostUpdateRequestDto)의 필드명(content)과 name을 일치 -->
+        <div>
+            <label for="content">내용: </label>
+            <!-- 기존 post 데이터를 th:text로 채워넣음 (textarea는 value가 아님) -->
+            <textarea id="content" name="content" th:text="${post.content}"></textarea>
+        </div>
+
+        <button type="submit">수정 완료</button>
+        <!-- 상세 페이지로 돌아가는 '취소' 버튼 -->
+        <a th:href="@{/posts/{id}(id=${post.id})}" class="btn-cancel">취소</a>
+    </form>
+</body>
+</html>

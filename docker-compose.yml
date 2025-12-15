@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # 1. 데이터베이스 서비스 (PostgreSQL)
+  my-database:
+    image: postgres:15
+    container_name: board-db
+    environment:
+      POSTGRES_DB: myboard      # DB 이름
+      POSTGRES_USER: user       # 사용자 아이디
+      POSTGRES_PASSWORD: password # 사용자 비번
+    ports:
+      - "5432:5432" # PostgreSQL 기본 포트
+    volumes:
+      - ./db_data:/var/lib/postgresql/data # 데이터 저장 경로가 MySQL과 다름
+    # M3 맥북은 postgres 이미지를 네이티브로 지원하므로 platform 옵션이 없어도 잘 돌아갑니다.
+
+  # 2. 스프링 부트 서버 서비스
+  my-app:
+    build: .
+    container_name: board-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - my-database
+    environment:
+      # [중요] PostgreSQL 접속 URL 형식
+      SPRING_DATASOURCE_URL: jdbc:postgresql://my-database:5432/myboard
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      # JPA가 PostgreSQL 방언을 사용하도록 설정
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
