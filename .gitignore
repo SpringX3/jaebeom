@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### 커스텀 설정 ###
+db_data/
+.DS_Store
