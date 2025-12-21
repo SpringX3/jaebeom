@@ -1,4 +1,4 @@
-name: Deploy to EC@
+name: Deploy to EC2
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu_latest
+    runs-on: ubuntu-latest
     steps:
       - name: SSH로 EC2에 접속해서 배포 스크립트 실행
         uses: appleboy/ssh-action@v1.0.3
