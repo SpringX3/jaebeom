@@ -1,0 +1,18 @@
+# .dockerignore
+
+# 1. 깃 관리 파일
+.git
+.gitignore
+
+# 2. 인텔리제이 설정 파일
+.idea
+
+# 3. 그레이들 캐시
+.gradle
+gradle
+
+# 4.
+
+
+# 5. 기타 문서
+*.md
