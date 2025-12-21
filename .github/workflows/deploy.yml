@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 자동 배포 확인
     steps:
       - name: SSH로 EC2에 접속해서 배포 스크립트 실행
         uses: appleboy/ssh-action@v1.0.3
