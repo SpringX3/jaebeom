@@ -74,24 +74,24 @@
                 sec:authorize -> th:if 로 변경
                 - session.loginMember가 없으면(null) 보임 (로그인 안 한 상태)
             -->
-            <a href="/login" th:if="${session.loginMember == null}">로그인</a>
-            <a href="/members/join" th:if="${session.loginMember == null}">회원가입</a>
+            <a href="/login" th:if="${loginMember == null}">로그인</a>
+            <a href="/members/join" th:if="${loginMember == null}">회원가입</a>
 
             <!--
                 - session.loginMember가 있으면(not null) 보임 (로그인 한 상태)
                 - session.loginMember 객체의 'nickname' 필드 표시
             -->
-            <span th:if="${session.loginMember != null}">
-                <strong th:text="${session.loginMember.nickname}">사용자닉네임</strong>님 환영합니다!
+            <span th:if="${loginMember != null}">
+                <strong th:text="${loginMember.nickname}">사용자닉네임</strong>님 환영합니다!
             </span>
             <!-- 로그아웃 URL(/logout)은 LoginController에 만듦 -->
-            <a href="/logout" th:if="${session.loginMember != null}">로그아웃</a>
+            <a href="/logout" th:if="${loginMember != null}">로그아웃</a>
         </div>
     </div>
 
     <!-- 새 글 작성하기 버튼 -->
     <!-- 로그인한 사용자에게만 '새 글 작성하기' 버튼이 보이도록 수정 -->
-    <a href="/posts/add" class="btn" th:if="${session.loginMember != null}">새 글 작성하기</a>
+    <a href="/posts/add" class="btn" th:if="${loginMember != null}">새 글 작성하기</a>
 
     <table>
         <thead>

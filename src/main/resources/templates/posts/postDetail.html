@@ -66,7 +66,7 @@
 
         <!-- 로그인한 사용자 + 작성자 본인만 수정/삭제 버튼이 보이도록 th:if 추가 -->
         <div style="display: inline;"
-             th:if="${session.loginMember != null AND session.loginMember.loginId == post.authorLoginId}">
+             th:if="${loginMember != null AND loginMember.loginId == post.authorLoginId}">
             <!-- 수정 버튼 (GET) -->
             <a th:href="@{/posts/{id}/edit(id=${post.id})}" class="btn btn-edit">수정</a>
 

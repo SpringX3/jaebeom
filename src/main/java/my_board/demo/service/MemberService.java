@@ -2,7 +2,13 @@ package my_board.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import my_board.demo.domain.Member;
+import my_board.demo.dto.TokenInfo;
 import my_board.demo.repository.MemberRepository;
+import my_board.demo.security.JwtTokenProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor // final 필드 생성자 자동 주입 (Lombok)
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 회원가입 처리
@@ -20,6 +29,7 @@ public class MemberService {
         validateDuplicateMember(member);
 
         // 2. 비밀번호 암호화
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
 
         // 3. 회원 정보 저장
         memberRepository.save(member);
@@ -27,24 +37,23 @@ public class MemberService {
     }
 
     /**
-     * (신규) 로그인 기능
-     * @return 로그인 성공 시 Member 객체, 실패 시 null
+     * JWT 토큰 반환
      */
-    @Transactional(readOnly = true) // 조회(Read) 기능
-    public Member login(String loginId, String password) {
-        // 1. ID로 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
-                .orElse(null); // ID가 없으면 null 반환
+    @Transactional
+    public TokenInfo login(String loginId, String password) {
+        // 1. Login ID/PW를 기반으로 Authentication 객체 생성
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, password);
 
-        if (member == null) {
-            return null; // ID 없음
-        }
+        try {
+            // 2. 실제 검증 (사용자 비밀번호 체크)
+            // authenticate() 실행 시 CustomUserDetailsService.loadUserByUsername 실행됨
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        // 2. 원본 비밀번호와 DB의 비밀번호가 일치하는지 확인
-        if (member.getPassword().equals(password)) {
-            return member; // 로그인 성공
-        } else {
-            return null; // 비밀번호 불일치
+            // 3. 인증 정보를 기반으로 JWT 토큰 생성
+            return jwtTokenProvider.generateToken(authentication);
+        } catch (Exception e) {
+            // 로그인 실패 시 null 반환 (Controller에서 처리)
+            return null;
         }
     }
 
