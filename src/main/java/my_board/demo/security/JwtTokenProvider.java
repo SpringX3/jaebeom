@@ -84,7 +84,7 @@ public class JwtTokenProvider {
     // 3. 토큰 유효성 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            getJwtParser().parseClaimsJws(token); // 추출한 파서 사용
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -98,9 +98,13 @@ public class JwtTokenProvider {
         return false;
     }
 
+    private JwtParser getJwtParser() {
+        return Jwts.parserBuilder().setSigningKey(key).build();
+    }
+
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return getJwtParser().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
