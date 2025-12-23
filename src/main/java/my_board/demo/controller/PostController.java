@@ -44,7 +44,7 @@ public class PostController {
     // 현재 로그인한 사용자를 가져오는 헬퍼 메서드
     private Member getLoginMember() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null || auth.getPrincipal().equals("anonymousUser")) {
+        if (auth == null || auth.getPrincipal().equals("anonymousUser")) {
             return null;
         }
         // 인증된 사용자의 ID(loginId)로 DB에서 조회
@@ -106,6 +106,8 @@ public class PostController {
 
         PostResponseDto responseDto = new PostResponseDto(post);
         model.addAttribute("post", responseDto);
+
+        model.addAttribute("loginMember", getLoginMember());
 
         return "posts/postDetail";
     }
