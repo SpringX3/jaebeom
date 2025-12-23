@@ -74,7 +74,7 @@
                 sec:authorize -> th:if 로 변경
                 - session.loginMember가 없으면(null) 보임 (로그인 안 한 상태)
             -->
-            <a href="/login" th:if="${loginMember == null}">로그인</a>
+            <a href="/members/login" th:if="${loginMember == null}">로그인</a>
             <a href="/members/join" th:if="${loginMember == null}">회원가입</a>
 
             <!--

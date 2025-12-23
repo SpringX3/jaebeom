@@ -34,7 +34,7 @@ public class SecurityConfig {
                         // 로그인, 회원가입, 메인 페이지, 정적 리소스는 누구나 접근 가능
                         .requestMatchers("/", "/members/login", "/members/join", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
                         // 게시글 목록 보기(GET /posts)도 누구나 접근 가능 (상세 보기도 포함)
-                        .requestMatchers("posts/**").permitAll()
+                        .requestMatchers("/posts/**").permitAll()
                         // 그 외 요청(글 쓰기, 수정 등)은 인증된 사용자만 가능
                         // (PostController 내부에서 로그인 체크를 한 번 더 하므로 여기선 유연하게 둠)
                         .anyRequest().authenticated()

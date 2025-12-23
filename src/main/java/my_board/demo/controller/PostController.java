@@ -56,8 +56,7 @@ public class PostController {
     @GetMapping
     public String listPosts(Model model, @PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Post> postPage = postRepository.findAllWithMember(pageable);
-        Page<PostResponseDto> postDtoPage = postPage.map(PostResponseDto::new);
-        model.addAttribute("postPage", postDtoPage);
+        model.addAttribute("postPage", postPage.map(PostResponseDto::new));
         model.addAttribute("loginMember", getLoginMember());
         return "posts/postList";
     }
@@ -66,11 +65,12 @@ public class PostController {
     // 1. 글 작성 폼(HTML)을 보여줌 (GET)
     @Operation(summary = "게시글 작성 페이지", description = "게시글 작성 페이지를 보여줍니다.")
     @GetMapping("/add")
-    public String addForm() {
+    public String addForm(Model model) {
         Member loginMember = getLoginMember();
         if (loginMember == null) {
-            return "redirect:/login";
+            return "redirect:/members/login";
         }
+        model.addAttribute("loginMember", loginMember);
         return "posts/postForm";
     }
 
@@ -81,12 +81,11 @@ public class PostController {
         Member loginMember = getLoginMember();
 
         if (loginMember == null) {
-            return "redirect:/login";
+            return "redirect:/members/login";
         }
-        String loginId = loginMember.getLoginId();
 
         try {
-            postService.save(Save_Req, loginId);
+            postService.save(Save_Req, loginMember.getLoginId());
         } catch (Exception e) {
             System.out.println("Error saving post: " + e.getMessage());
             return "redirect:/posts/add?error=true";
@@ -104,9 +103,7 @@ public class PostController {
         Post post = postRepository.findByIdWithMember(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + id));
 
-        PostResponseDto responseDto = new PostResponseDto(post);
-        model.addAttribute("post", responseDto);
-
+        model.addAttribute("post", new PostResponseDto(post));
         model.addAttribute("loginMember", getLoginMember());
 
         return "posts/postDetail";
@@ -126,8 +123,8 @@ public class PostController {
             return "redirect:/posts";
         }
 
-        PostResponseDto responseDto = new PostResponseDto(post);
-        model.addAttribute("post", responseDto);
+        model.addAttribute("post", new PostResponseDto(post));
+        model.addAttribute("loginMember", loginMember);
 
         return "posts/postEditForm";
     }
@@ -136,7 +133,6 @@ public class PostController {
     @Operation(summary = "게시글 수정", description = "작성자 확인 후 게시글을 수정합니다.")
     @PostMapping(value = "/{id}/edit",  consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String updatePost(@PathVariable Long id, @ModelAttribute PostUpdateRequestDto Update_Req) {
-        // 작성자 본인 확인
         Post post = postRepository.findByIdWithMember(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + id));
 
@@ -155,7 +151,6 @@ public class PostController {
     @Operation(summary = "게시글 삭제", description = "작성자 확인 후 게시글을 삭제합니다.")
     @PostMapping("/{id}/delete")
     public String deletePost(@PathVariable Long id) {
-        // 작성자 본인 확인
         Post post = postRepository.findByIdWithMember(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + id));
 
