@@ -11,8 +11,9 @@
 .gradle
 gradle
 
-# 4.
-
+# 4. 무시할 데이터 폴더
+db_data
+db_data/
 
 # 5. 기타 문서
 *.md
